@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.tencent.mm" android:versionCode="8" android:versionName="8.0.99">
+    <uses-sdk android:minSdkVersion="24" android:targetSdkVersion="28" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <application android:label="扫码步道乐跑" android:theme="@android:style/Theme.Material.Light.NoActionBar" android:allowBackup="false" android:usesCleartextTraffic="true">
+        <meta-data android:name="com.tencent.mm.BuildInfo.OPEN_SDK_VERSION" android:value="638058496" />
+        <activity android:name="com.tencent.mm.plugin.base.stub.WXEntryActivity" android:exported="true" android:screenOrientation="portrait" android:launchMode="singleTop" android:configChanges="orientation|screenSize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
+
+
+
+
+
