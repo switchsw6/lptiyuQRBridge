@@ -1,8 +1,8 @@
 # lptiyuQRBridge
 
-> 本项目基于 **vibe coding** 模式开发：人和 AI 结对迭代，跑通即交付。
+> 本项目基于 **vibe coding** 模式开发。
 
-模拟器里没装微信，也能让步道乐跑完成微信登录：装一个「扫码步道乐跑」助手，授权请求被它接住，电脑端向微信要一张真正的扫码授权二维码，你用手机扫一下并确认，授权码原样回投给应用，登录由应用自己完成。搭配<https://github.com/switchsw6/fklptiyu>项目使用更佳。
+模拟器里没装微信，也能让步道乐跑完成微信登录：装一个「扫码步道乐跑」助手，授权请求被它接住，电脑端向微信要一张真正的扫码授权二维码，你用手机扫一下并确认，授权码原样回投给应用，登录由应用自己完成。搭配<https://github.com/switchsw6/fklptiyu>项目使用更佳。交流群708449898
 
 ## 用法
 
@@ -50,6 +50,7 @@ scripts/deploy_local.py      部署编排（设备选择、安装检查、自动
 scripts/build_qr_bridge.py   构建助手 APK（自签、产物自检）
 scripts/qr_login/            证书钩子与调试脚本
 src/lepao_qr_bridge/         电脑端授权服务 + 助手源码（Java）
+release/                     apk
 ```
 
 ## 边界
