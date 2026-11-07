@@ -452,13 +452,26 @@ def ensure_frida_server(adb: str, device: str) -> None:
     remote = "/data/local/tmp/frida-server"
     run([adb, "-s", device, "push", str(local), remote])
     adb_shell(adb, device, "chmod", "755", remote)
-    adb_shell(adb, device, "-c", f"nohup {remote} -D >/data/local/tmp/frida.log 2>&1 &", check=False)
+    if frida_server_pid(adb, device):
+        return
+    # One shell string (adb runs it through the device shell). Splitting "-c" as a
+    # separate adb argument fails with "adb shell: unknown option -- c".
+    adb_shell(adb, device, f"nohup {remote} -D >/data/local/tmp/frida.log 2>&1 &", check=False)
     for _ in range(20):
         time.sleep(0.5)
         if frida_server_pid(adb, device):
             return
-    device_log = adb_shell(adb, device, "cat", "/data/local/tmp/frida.log", check=False).strip()
-    fail("frida-server 启动失败：\n" + (device_log or "(无输出)"))
+    ver = adb_shell(adb, device, "cat", "/data/local/tmp/frida.log", check=False).strip()
+    where = adb_shell(adb, device, "id", check=False).strip()
+    selinux = adb_shell(adb, device, "getenforce", check=False).strip()
+    detail = "\n".join(filter(None, [
+        f"设备身份: {where}" if where else "",
+        f"SELinux: {selinux}" if selinux else "",
+        f"设备端日志: {ver}" if ver else "设备端日志: (空)",
+    ]))
+    fail("frida-server 启动失败。\n" + detail +
+         "\n    排查：模拟器需要在设置里打开 root（adb root 后 `id` 应为 uid=0）；\n"
+         "    Google Play 镜像禁用 adb root，请改用可 root 的模拟器（如 MuMu 12）。")
 
 
 # ---------------------------------------------------------------- processes
@@ -559,6 +572,11 @@ def main() -> int:
     say(f"\n[1/6] 设备 {device}")
     run([adb, "-s", device, "root"], check=False)
     time.sleep(2)
+    identity = adb_shell(adb, device, "id", check=False).strip()
+    if "uid=0" not in identity:
+        fail("这台设备拿不到 root（当前身份: " + (identity[:60] or "未知") + "）。\n"
+             "    证书钩子必须 root：MuMu 这类模拟器在设置里打开 root 即可；\n"
+             "    Google Play 镜像禁用了 adb root，请换一台可 root 的模拟器。")
     run([adb, "-s", device, "reverse", f"tcp:{PORT}", f"tcp:{PORT}"])
     say("      端口环回就绪")
 
